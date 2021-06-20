@@ -1,0 +1,25 @@
+{
+    "orders": [
+        {
+            "item": "test_1",
+            "quantity": "1",
+            "price": "1",
+            "buyer": "test1",
+            "date": "01.01.1900"
+        },
+        {
+            "item": "test_2",
+            "quantity": "2",
+            "price": "2",
+            "buyer": "test2",
+            "date": "02.02.1900"
+        },
+        {
+            "item": "test_3",
+            "quantity": "3",
+            "price": "3",
+            "buyer": "test3",
+            "date": "03.03.1900"
+        }
+    ]
+}
