@@ -2,6 +2,8 @@ from socket import *
 import json
 import time
 import sys
+import log.server_log_config
+import logging
 
 
 def server_param():
@@ -16,6 +18,7 @@ def server_param():
     else:
         host = ''
         port = 7777
+    logger.info(f'server param {host}, {port}')
     return host, port
 
 
@@ -25,6 +28,7 @@ def client_data_to_dict(a):
     client_responce = dict()
     for section, commands in objs.items():
         client_responce[section] = commands
+    logger.info(client_responce)
     return client_responce
 
 
@@ -55,18 +59,33 @@ SERVER_RESPONSE_ERROR = {
     "time": '<unix timestamp>',
     "error": "error message (optional)"}
 
-host, port = server_param()
-s = socket(AF_INET, SOCK_STREAM)
-s.bind((host, port))
-s.listen(5)
+logger = logging.getLogger('server')
+if __name__ == '__main__':
+    logger.debug('App started')
 
-while True:
-    client, addr = s.accept()
-    data = client.recv(1024)
-    print("Запрос от: {}".format(str(client)))
-    data_client = data.decode('UTF-8')
-    server_responce1 = client_data_to_dict(data_client)
-    server_responce2 = server_responce(server_responce1)
-    server_responce_json = str(server_responce2).encode('UTF-8')
-    client.send(server_responce_json)
-    client.close()
+    host, port = server_param()
+    s = socket(AF_INET, SOCK_STREAM)
+    s.bind((host, port))
+    s.listen(5)
+
+    while True:
+        client, addr = s.accept()
+        logger.info(f'incom mess from {client},{addr}')
+        data = client.recv(1024)
+        print("Запрос от: {}".format(str(client)))
+        try:
+            data_client = data.decode('UTF-8')
+        except ConnectionResetError as e:
+            logger.error(e)
+            break
+        server_responce1 = client_data_to_dict(data_client)
+        server_responce2 = server_responce(server_responce1)
+        server_responce_json = str(server_responce2).encode('UTF-8')
+
+        try:
+            client.send(server_responce_json)
+        except ConnectionResetError as e:
+            logger.error(e)
+            break
+        logger.debug('App ending')
+        client.close()
