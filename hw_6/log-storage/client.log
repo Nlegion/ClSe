@@ -1,0 +1,4 @@
+2021-06-27 12:17:29,936 - DEBUG    - client   - App started 
+2021-06-27 12:17:35,912 - INFO     - client   - Connected to server: 1624785455.9124732:е123 
+2021-06-27 12:17:35,920 - INFO     - client   - Data sended to b'{"action": "presence", "time": 1624785455.9124732, "type": "online", "user": {"account_name": "\xd0\xb5123", "status": "\xd0\xa1\xd1\x82\xd0\xb0\xd1\x82\xd1\x83\xd1\x81 \xd0\xbd\xd0\xbe\xd1\x80\xd0\xbc"}}' 
+2021-06-27 12:17:35,921 - DEBUG    - client   - App ending 
