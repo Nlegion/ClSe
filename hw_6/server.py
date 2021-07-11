@@ -4,8 +4,22 @@ import time
 import sys
 import log.server_log_config
 import logging
+from functools import wraps
+
+server_logger = logging.getLogger('server')
+client_logger = logging.getLogger('client')
 
 
+def log(func):
+    @wraps(func)
+    def call(*args, **kwargs):
+        server_logger.debug(f'Function "{func.__name__}" is called from "{func.__module__}"')
+        client_logger.debug(f'Function "{func.__name__}" is called from "{func.__module__}"')
+        return func(*args, **kwargs)
+    return call
+
+
+@log
 def server_param():
     if sys.argv == 3:
         for param1, param2 in sys.argv:
@@ -21,7 +35,7 @@ def server_param():
     logger.info(f'server param {host}, {port}')
     return host, port
 
-
+@log
 def client_data_to_dict(a):
     data_client = a
     objs = json.loads(data_client)
@@ -31,7 +45,7 @@ def client_data_to_dict(a):
     logger.info(client_responce)
     return client_responce
 
-
+@log
 def server_responce_200(account_name):
     server_answer = {
         "response": 200,
@@ -40,7 +54,7 @@ def server_responce_200(account_name):
     print(server_answer)
     return server_answer
 
-
+@log
 def server_responce(client_responce):
     if client_responce['action'] == 'presence':
         account_name = client_responce['user']['account_name']

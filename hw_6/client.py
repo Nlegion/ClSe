@@ -4,8 +4,20 @@ import time
 import sys
 import log.client_log_config
 import logging
+from functools import wraps
 
+server_logger = logging.getLogger('server')
+client_logger = logging.getLogger('client')
 
+def log(func):
+    @wraps(func)
+    def call(*args, **kwargs):
+        server_logger.debug(f'Function "{func.__name__}" is called from "{func.__module__}"')
+        client_logger.debug(f'Function "{func.__name__}" is called from "{func.__module__}"')
+        return func(*args, **kwargs)
+    return call
+
+@log
 def client_param():
     if sys.argv == 3:
         for param1, param2 in sys.argv:
@@ -21,7 +33,7 @@ def client_param():
 
     return host, port
 
-
+@log
 def data_clients_input():
     try:
         account_name = input("Введите имя: ")
@@ -42,13 +54,13 @@ def data_clients_input():
         logger.error(e)
         exit(1)
 
-
+@log
 def client_data_encode():
     data_client = data_clients_input()
     data_to_send = data_client.encode('UTF-8')
     return data_to_send
 
-
+@log
 def server_responce_to_str(a):
     server_responce = a
     server_responce = server_responce.decode('UTF-8')
